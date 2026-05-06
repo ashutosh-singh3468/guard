@@ -29,7 +29,7 @@ export default function OrderDetails({ order, allUserItems }) {
     <section className="space-y-4 rounded-2xl bg-white p-4 shadow-md sm:p-6">
       <div className="border-b border-slate-200 pb-3">
         <h2 className="break-all text-lg font-bold text-slate-900 sm:text-xl">Order: {order.order_number}</h2>
-        <p className="text-sm text-slate-500 text-emerald-600 font-bold">Total Amount: ₹{order.total_amount}</p>
+        <p className="text-sm text-emerald-600 font-bold">Total Amount: ₹{order.total_amount}</p>
       </div>
 
       <UserCard user={order.user} />
@@ -52,7 +52,7 @@ export default function OrderDetails({ order, allUserItems }) {
                     )} */}
                     <p><span className="font-medium">Expiry:</span> {item.product_detail.expiry}</p>
                     <p><span className="font-medium">Value:</span> {item.product_detail.value} {item.product_detail.unit}</p>
-                    <p><span className="font-medium">Price:</span> ₹{item.product_detail.price}</p>
+                    <p><span className="font-medium">Price:</span> ₹{item.price_at_purchase}</p>
                     {/* <p><span className="font-medium">Product Number:</span> {item.product_detail.product_number}</p> */}
                   </>
                 ) : (
@@ -80,31 +80,20 @@ export default function OrderDetails({ order, allUserItems }) {
           <table className="min-w-full text-left text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-slate-500">
-                <th className="px-2 py-2">Item ID</th>
                 <th className="px-2 py-2">Product</th>
-                <th className="px-2 py-2">Photo</th>
                 <th className="px-2 py-2">Expiry</th>
                 <th className="px-2 py-2">Value</th>
                 <th className="px-2 py-2">Price</th>
                 <th className="px-2 py-2">Qty</th>
-                <th className="px-2 py-2">Price at Purchase</th>
+                <th className="px-2 py-2">Total</th>
               </tr>
             </thead>
             <tbody>
               {itemsToShow.length ? (
                 itemsToShow.map((item) => (
                   <tr key={item.id} className="border-b border-slate-100 text-slate-700">
-                    <td className="px-2 py-2">{item.id}</td>
                     <td className="px-2 py-2">
                       {item.product_detail ? item.product_detail.name : item.product}
-                      {item.product_detail && (
-                        <div className="text-xs text-slate-500">{item.product_detail.product_number}</div>
-                      )}
-                    </td>
-                    <td className="px-2 py-2">
-                      {item.product_detail?.photo && (
-                        <img src={item.product_detail.photo} alt={item.product_detail.name} className="w-12 h-12 object-cover rounded" />
-                      )}
                     </td>
                     <td className="px-2 py-2">{item.product_detail?.expiry || '-'}</td>
                     <td className="px-2 py-2">
@@ -112,7 +101,12 @@ export default function OrderDetails({ order, allUserItems }) {
                     </td>
                     <td className="px-2 py-2">₹{item.product_detail?.price || item.price_at_purchase}</td>
                     <td className="px-2 py-2">{item.qty}</td>
-                    <td className="px-2 py-2">₹{item.price_at_purchase}</td>
+                    <td className="px-2 py-2">{' '}
+                      ₹{item.price_at_purchase || 0} X {item.qty} ={' '}
+                      <span className="font-semibold text-emerald-600">
+                      ₹{item.qty * (item.price_at_purchase || 0)}
+                      </span>
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -123,6 +117,8 @@ export default function OrderDetails({ order, allUserItems }) {
                 </tr>
               )}
             </tbody>
+            <br></br>
+            <p className="text-sm text-emerald-600 font-semibold">Total Amount: ₹{order.total_amount}</p>
           </table>
         </div>
       </div>
